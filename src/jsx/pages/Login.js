@@ -13,7 +13,7 @@ function Login (props) {
 	const [heartActive, setHeartActive] = useState(true);
 	
 	const navigate = useNavigate();
-    const [email, setEmail] = useState('demo@example.com');
+    const [email, setEmail] = useState('abc@gmail.com');
     let errorsObj = { email: '', password: '' };
     const [errors, setErrors] = useState(errorsObj);
     const [password, setPassword] = useState('123456');

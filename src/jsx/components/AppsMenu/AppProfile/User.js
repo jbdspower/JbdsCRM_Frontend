@@ -7,8 +7,10 @@ import GridTab from './GridTab';
 import EmployeeOffcanvas from '../../../constant/EmployeeOffcanvas';
 import ListTab from './ListTab';
 
-const User = ({isList, filter, isExcel}) => {
+const User = ({isList = false, filter, isExcel}) => {
     const userdata = useRef();
+    console.log("user daataa",userdata);
+    console.log("is list", isList)
     return (
         <>
            { !isList &&  <MainPagetitle mainTitle="Dashboard" pageTitle="User" parentTitle="Management"/>}
@@ -31,7 +33,7 @@ const User = ({isList, filter, isExcel}) => {
                                     </Nav.Item> */}
                                 </Nav>
                                 <Link to className="btn btn-primary btn-sm ms-2"
-                                    onClick={()=>userdata.current.showEmployeModal()}
+                                    // onClick={()=>userdata.current.showEmployeModal()}
                                 >+ Add User
                                 </Link>
                             </div>

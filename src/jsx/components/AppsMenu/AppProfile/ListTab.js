@@ -166,7 +166,9 @@ const ListTab = ({ filter = [],isList }) => {
                                             <td>{item.designation}</td>
                                             <td>{item.department}</td>
                                             <td>{item.mobileNumber}</td>
-                                            <td>{item.userRole.UserRole}</td>
+                                            {/* <td>{item.userRole.UserRole}</td> */}
+                                            <td>{item?.userRole?.UserRole || "No Role Assigned"}</td>
+
                                             <td>
                                                 <Dropdown>
                                                     <Dropdown.Toggle as="div" className="btn-link i-false">
