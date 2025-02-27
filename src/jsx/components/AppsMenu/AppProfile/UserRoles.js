@@ -44,7 +44,7 @@ const UserRoles = () => {
         };
 
         try {
-            const response = await axios.post(api.api + 'userRole', roleData);
+            const response = await axios.post(`${api.api}userRole`, roleData);
             console.log('Role added successfully:', response.data);
             swal('Role added successfully')
             setAddRole(false); // Close the offcanvas on successful submission
@@ -56,6 +56,7 @@ const UserRoles = () => {
     const fetchRoles = async () => {
         try {
             const response = await axios.get(`${api.api}userRole`);
+            console.log('Roles fetched successfully:', response.data);
             setRoles(response.data);
         } catch (error) {
             console.error('There was an error fetching the roles:', error);
