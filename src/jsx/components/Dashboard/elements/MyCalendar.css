@@ -1,0 +1,24 @@
+/* Calendar Toolbar Customization */
+.rbc-toolbar {
+    font-size: 1.2rem; /* Adjust font size for the toolbar */
+    padding: 10px 15px;
+  }
+  
+  .rbc-toolbar-label {
+    font-size: 1.2rem; /* Increase font size for month/year label */
+    font-weight: bold;
+  }
+  
+  .rbc-btn-group button {
+    font-size: 1.1rem; /* Increase font size for toolbar buttons */
+    padding: 5px 10px;
+  }
+
+  .calendar-custom .rbc-toolbar {
+    font-size: 0.8rem; /* Adjust the font size as needed */
+  }
+  
+  .calendar-custom .rbc-toolbar {
+    display: none;
+  }
+  

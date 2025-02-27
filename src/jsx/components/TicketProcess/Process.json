@@ -1,0 +1,280 @@
+[
+    {
+        "_id" : "6630943e4ee4d13cf0be3d98",
+        "DocumentType" : "WorkFlow",
+        "WorkFlowName" : "ticketprocess",
+        "Description" : "ticketprocess",
+        "State" : [ 
+            {
+                "_id" : "6630943e4ee4d13cf0be3d99",
+                "StateType" : "Create SR",
+                "StateName" : "Create SR",
+                "FormName" : "Create Ticket",
+                "Fields" : [ 
+                    {
+                        "name" : "ClientName",
+                        "label" : "Client Name",
+                        "type" : "text",
+                        "placeholder" : "Enter client name",
+                        "required" : true
+                    }, 
+                    {
+                        "name" : "ClientEmailId",
+                        "label" : "Client Email",
+                        "type" : "email",
+                        "placeholder" : "Enter email",
+                        "Required" : true
+                    }, 
+                    {
+                        "name" : "ClientMobNumber",
+                        "label" : "Client Mobile Number",
+                        "type" : "phone",
+                        "required" : true
+                    }, 
+                    {
+                        "name" : "CompanyName",
+                        "label" : "Company Name",
+                        "type" : "text",
+                        "required" : true
+                    }, 
+                    {
+                        "name" : "Designation",
+                        "label" : "Designation",
+                        "type" : "text"
+                    }, 
+                    {
+                        "name" : "ComplaintDesc",
+                        "label" : "Complaint Description",
+                        "type" : "text"
+                    }, 
+                    {
+                        "name" : "AssignPerson",
+                        "label" : "Assign Person",
+                        "type" : "radio",
+                        "options" : [ 
+                            {
+                                "label" : "Manager",
+                                "value" : "manager",
+                                "name" : "AssignRole",
+                                "apiEndpoint" : "http://localhost:4002/LeafNetServer/api/user/manager"
+                            }, 
+                            {
+                                "label" : "Employee",
+                                "value" : "employee",
+                                "name" : "AssignRole",
+                                "apiEndpoint" : "http://localhost:4002/LeafNetServer/api/user/employee"
+                            }
+                        ]
+                    }, 
+                    {
+                        "name" : "AssignPerson",
+                        "label" : "Person To Assign",
+                        "type" : "select",
+                        "apiEndpoint" : "http://localhost:4002/LeafNetServer/api/user/employee",
+                        "required" : true
+                    }, 
+                    {
+                        "name" : "UploadImages",
+                        "label" : "Upload Images",
+                        "type" : "file",
+                        "multiple" : true
+                    }
+                ],
+                "Control" : [ 
+                    {
+                        "_id" : "664c43677dda12185428746a",
+                        "Control_Name" : "Create",
+                        "Action" : "Change_State",
+                        "Description" : "testign",
+                        "Action_On_User_Input" : "Any",
+                        "NextStateName" : "NotStarted",
+                        "User_Roles_Eligible" : [ ],
+                        "Send_Notification" : true,
+                        "Event_To_Log" : [],
+                        "Send_Notification_To" : []
+                    }
+                ]
+            }, 
+            
+            {
+                "_id" : "6630943e4ee4d13cf0be3d9a",
+                "StateType" : "Assign",
+                "StateName" : "Assign",
+                "FormName" : "Enter Time Estimate And Accept OR Reject",
+                "Fields" : [ 
+                    {
+                        "name" : "AssignPerson",
+                        "label" : "Assign Person",
+                        "type" : "radio",
+                        "user_role_view" : [ 
+                            "manager"
+                        ],
+                        "options" : [ 
+                            {
+                                "label" : "Manager",
+                                "value" : "manager",
+                                "name" : "AssignRole",
+                                "apiEndpoint" : "http://localhost:4002/LeafNetServer/api/user/manager"
+                            }, 
+                            {
+                                "label" : "Employee",
+                                "value" : "employee",
+                                "name" : "AssignRole",
+                                "apiEndpoint" : "http://localhost:4002/LeafNetServer/api/user/employee"
+                            }
+                        ]
+                    }, 
+                    {
+                        "name" : "AssignPerson",
+                        "user_role_view" : [ 
+                            "manager"
+                        ],
+                        "label" : "Assign To Person",
+                        "type" : "select",
+                        "apiEndpoint" : "http://localhost:4002/LeafNetServer/api/user",
+                        "required" : true
+                    }
+                ],
+                "Control" : [ 
+                    {
+                        "_id" : "664c43677dda121854287470",
+                        "Control_Name" : "Accept",
+                        "Action" : "Change_State",
+                        "Description" : "testing",
+                        "Action_On_User_Input" : "Any",
+                        "NextStateName" : "Assign",
+                        "User_Roles_Eligible" : [ 
+                            "employee"
+                        ],
+                        "Send_Notification" : true,
+                        "Event_To_Log" : [],
+                        "Send_Notification_To" : []
+                    }, 
+                    {
+                        "_id" : "664c43677dda121854287470",
+                        "Control_Name" : "Reject",
+                        "Action" : "Change_State",
+                        "Description" : "reject",
+                        "Action_On_User_Input" : "Any",
+                        "NextStateName" : "Close",
+                        "Send_Notification" : false,
+                        "Event_To_Log" : [],
+                        "Send_Notification_To" : []
+                    }, 
+                    {
+                        "_id" : "664c43677dda121854287470",
+                        "Control_Name" : "Assign To Other",
+                        "Action" : "Change_State",
+                        "Description" : "assign to other",
+                        "Action_On_User_Input" : "Any",
+                        "NextStateName" : "NotStarted",
+                        "User_Roles_Eligible" : [ 
+                            "manager"
+                        ],
+                        "Send_Notification" : false,
+                        "Event_To_Log" : [],
+                        "Send_Notification_To" : []
+                    }
+                ]
+            }, 
+            {
+                "_id" : "6630943e4ee4d13cf0be3d9b",
+                "StateType" : "Pending",
+                "StateName" : "Pending",
+                "FormName" : "Check In",
+                "Fields" : [ 
+                    {
+                        "name" : "UploadImages",
+                        "label" : "Upload Images",
+                        "type" : "file",
+                        "multiple" : true
+                    }, 
+                    {
+                        "name" : "Remarks",
+                        "label" : "Remarks",
+                        "type" : "text",
+                        "required" : true,
+                        "placeholder" : "Enter Remarks"
+                    }
+                ],
+                "Control" : [ 
+                    {
+                        "_id" : "664c43677dda12185428747b",
+                        "Control_Name" : "Check In",
+                        "Action" : "Change_State",
+                        "Description" : "testing",
+                        "Action_On_User_Input" : "All",
+                        "NextStateName" : "InProgress",
+                        "Send_Notification" : false,
+                        "Event_To_Log" : [ 
+                            {
+                                "Event" : "TimeLog",
+                                "FieldName" : "CheckInTime"
+                            }
+                        ],
+                        "Send_Notification_To" : []
+                    }
+                ]
+            },
+            
+            
+            
+            {
+                "_id" : "6630943e4ee4d13cf0be3d9c",
+                "StateType" : "InProgress",
+                "StateName" : "InProgress",
+                "FormName" : "Check Out",
+                "Fields" : [ 
+                    {
+                        "name" : "Remarks",
+                        "label" : "Remarks",
+                        "type" : "text",
+                        "required" : true,
+                        "placeholder" : "Enter Remarks"
+                    }
+                ],
+                "Control" : [ 
+                    {
+                        "_id" : "664c43677dda121854287481",
+                        "Control_Name" : "Check Out",
+                        "Action" : "Change_State",
+                        "Description" : "testing",
+                        "Action_On_User_Input" : "Any",
+                        "NextStateName" : "Complete",
+                        "Send_Notification" : false,
+                        "Event_To_Log" : [ 
+                            {
+                                "Event" : "TimeLog",
+                                "FieldName" : "CheckOtTime"
+                            }
+                        ],
+                        "Send_Notification_To" : []
+                    }
+                ]
+            }, 
+            {
+                "_id" : "6630943e4ee4d13cf0be3d9d",
+                "StateType" : "Complete",
+                "StateName" : "Complete",
+                "Control" : [ 
+                    {
+                        "_id" : "664c43677dda121854287487",
+                        "Control_Name" : "Submit",
+                        "Action" : "Change_State",
+                        "Description" : "testing",
+                        "Action_On_User_Input" : "Any",
+                        "NextStateName" : "Close",
+                        "User_Roles_Eligible" : [ 
+                            
+                        ],
+                        "Send_Notification" : false,
+                        "Event_To_Log" : [],
+                        "Send_Notification_To" : []
+                    }
+                ]
+            }
+        ],
+        "__v" : 0
+    
+}
+]

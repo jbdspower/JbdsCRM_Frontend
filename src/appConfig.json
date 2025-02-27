@@ -1,0 +1,4 @@
+{
+    "api":"http://localhost:4002/LeafNetServer/api/",
+    "fileUrl":"http://localhost:4002/uploads/"
+}

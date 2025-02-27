@@ -1,0 +1,33 @@
+.filelabel {
+    width: 120px;
+    height: 23px;
+    border: 2px dashed grey;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    transition: border 300ms ease;
+    cursor: pointer;
+    text-align: center;
+    margin: 0;
+  }
+  
+  .filelabel i {
+    font-size: 13px;
+    margin-right: 8px;
+  }
+  
+  .filelabel .title {
+    font-size: 11px;
+  }
+  
+  .filelabel:hover {
+    border: 2px solid #1665c4;
+  }
+  
+  .filelabel:hover i,
+  .filelabel:hover .title {
+    color: #1665c4;
+  }
+  

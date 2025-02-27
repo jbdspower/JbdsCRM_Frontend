@@ -1,0 +1,76 @@
+.textStyleStrong {
+    color: black !important;
+    font-weight: 700 !important;
+}
+
+.bordered-box, .bordered-box1 {
+    border: 1px solid black;
+    background-color: #f0f0f0;
+    padding: 8px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.inner-bordered-box {
+    border: 1px solid black;
+    padding: 4px;
+    border-radius: 4px;
+    background-color: #e9ecef;
+}
+
+.button-container {
+    padding: 10px 0;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.p-2 {
+    padding: 16px;
+}
+
+.p-1 {
+    padding: 8px;
+}
+
+.row {
+    margin: 0 -8px;
+}
+
+.col-sm-4, .col-sm-3, .col-sm-9 {
+    padding: 0 8px;
+}
+
+.btn {
+    margin-top: 10px;
+}
+
+.fas {
+    margin-left: 5px;
+}
+
+.task-table {
+    background-color: #f0f0f0;
+    border: 1px solid black;
+    border-radius: 4px;
+}
+
+.task-table td {
+    /* border: 1px solid black; */
+    padding: 8px;
+}
+
+.bordered-input {
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 4px;
+    background-color: white;
+}
+
+.header-with-icon {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px;
+    background-color: #ffc107;
+    border-radius: 4px;
+}
