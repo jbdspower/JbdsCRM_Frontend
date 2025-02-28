@@ -34,7 +34,7 @@ const CustomerListTbl = () => {
     const fetchAllProducts = () => {
         axios.get(`${api.api}customer`)
             .then((result) => {
-                console.log("result.data",result.data);
+                console.log("result.data", result.data);
                 setAllUser(result.data);
                 setData(result.data.slice(0, sort));
             })
@@ -44,23 +44,45 @@ const CustomerListTbl = () => {
     };
 
     const handleEditUser = (user) => {
-        console.log("UserId",user);
+        console.log("UserId", user);
         setCurrentUser(user);
         setUpdatedUser(user);
         setShowEditModal(true);
     };
 
-    const handleDeleteUser = (productId) => {
-        axios.patch(`${api.api}customer/${productId}`)
-            .then(() => {
-                fetchAllProducts();
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    };
+    // const handleDeleteUser = (productId) => {
+    //     axios.patch(`${api.api}customer/${productId}`)
+    //         .then(() => {
+    //             fetchAllProducts();
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //         });
+    // };
 
-    const handlePageChange = (pageIndex) => {
+//================rohit new point===============================================================================
+const handleDeleteUser = (userId) => {
+    axios.delete(`${api.api}customer/${userId}`) // DELETE request for permanent deletion
+        .then(() => {
+            fetchAllProducts();
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+
+const handleToggleStatus = (user) => {
+    const newStatus = user.status === "Active" ? "Deactivated" : "Active";
+    axios.patch(`${api.api}customer/${user._id}`, { status: newStatus })
+        .then(() => {
+            fetchAllProducts();
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+//====================rohit new point end================================================================
+const handlePageChange = (pageIndex) => {
         const start = pageIndex * sort;
         const end = start + sort;
         setData(allUser.slice(start, end));
@@ -129,13 +151,14 @@ const CustomerListTbl = () => {
                                                 />
                                                 <label className="form-check-label" htmlFor="checkAll"></label>
                                             </div>
-                                        </th> 
+                                        </th>
                                         <th>Customer Name</th>
                                         <th>Company</th>
                                         <th>Mobile Number</th>
                                         <th>Email</th>
                                         <th>Designation</th>
                                         <th>Department</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -156,6 +179,34 @@ const CustomerListTbl = () => {
                                             <td>{item.email}</td>
                                             <td>{item.designation}</td>
                                             <td>{item.department}</td>
+                                            <td>
+                                            <button
+                    className={`btn btn-sm ${item.status === "Active" ? "btn-success" : "btn-danger"}`}
+                    onClick={() => handleToggleStatus(item)}
+                >
+                    {item.status === "Active" ? "Active" : "Deactivated"}
+                </button>
+            </td>
+                                       <td>
+                                       {item.status==="Active"? (
+                                                <Dropdown>
+                                                    <Dropdown.Toggle as="div" className="btn-link i-false">
+                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M11 12C11 12.5523 11.4477 13 12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12Z" stroke="#737B8B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
+                                                            <path d="M18 12C18 12.5523 18.4477 13 19 13C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11C18.4477 11 18 11.4477 18 12Z" stroke="#737B8B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
+                                                            <path d="M4 12C4 12.5523 4.44772 13 5 13C5.55228 13 6 12.5523 6 12C6 11.4477 5.55228 11 5 11C4.44772 11 4 11.4477 4 12Z" stroke="#737B8B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
+                                                        </svg>
+                                                    </Dropdown.Toggle>
+                                                    <Dropdown.Menu className="dropdown-menu-right" align="end">
+                                                        <Dropdown.Item onClick={() => handleEditUser(item)}>Edit</Dropdown.Item>
+                                                        <Dropdown.Item onClick={() => handleDeleteUser(item._id)}>Delete</Dropdown.Item>
+                                                     
+                                                    </Dropdown.Menu>
+                                                </Dropdown>
+                                                    ):   " "
+                                                }
+                                            </td>
+                                    
                                         </tr>
                                     ))}
                                 </tbody>
@@ -209,7 +260,7 @@ const CustomerListTbl = () => {
                 <Modal.Body>
                     <Form>
                         <Form.Group className="mb-3" controlId="formUserName">
-                            <Form.Label>Product Name</Form.Label>
+                            <Form.Label>Customer Name</Form.Label>
                             <Form.Control
                                 type="text"
                                 value={updatedUser.name || ''}
@@ -217,14 +268,30 @@ const CustomerListTbl = () => {
                             />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formUserEmail">
-                            <Form.Label>Product Description</Form.Label>
+                            <Form.Label>CompanyName</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={updatedUser.companyName || ''}
+                                onChange={(e) => setUpdatedUser({ ...updatedUser, companyName: e.target.value })}
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="formUserDesignation">
+                            <Form.Label>MobileNumber</Form.Label>
+                            <Form.Control
+                                type="number"
+                                value={updatedUser.mobileNumber || ''}
+                                onChange={(e) => setUpdatedUser({ ...updatedUser, mobileNumber: e.target.value })}
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="formUserDepartment">
+                            <Form.Label>Email</Form.Label>
                             <Form.Control
                                 type="text"
                                 value={updatedUser.email || ''}
                                 onChange={(e) => setUpdatedUser({ ...updatedUser, email: e.target.value })}
                             />
                         </Form.Group>
-                        {/* <Form.Group className="mb-3" controlId="formUserDesignation">
+                        <Form.Group className="mb-3" controlId="formUserMobile">
                             <Form.Label>Designation</Form.Label>
                             <Form.Control
                                 type="text"
@@ -232,7 +299,7 @@ const CustomerListTbl = () => {
                                 onChange={(e) => setUpdatedUser({ ...updatedUser, designation: e.target.value })}
                             />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formUserDepartment">
+                        <Form.Group className="mb-3" controlId="formUserRole">
                             <Form.Label>Department</Form.Label>
                             <Form.Control
                                 type="text"
@@ -240,22 +307,6 @@ const CustomerListTbl = () => {
                                 onChange={(e) => setUpdatedUser({ ...updatedUser, department: e.target.value })}
                             />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formUserMobile">
-                            <Form.Label>Mobile</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={updatedUser.mobileNumber || ''}
-                                onChange={(e) => setUpdatedUser({ ...updatedUser, mobileNumber: e.target.value })}
-                            />
-                        </Form.Group> */}
-                        {/* <Form.Group className="mb-3" controlId="formUserRole">
-                            <Form.Label>User Role</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={updatedUser.userRole || ''}
-                                onChange={(e) => setUpdatedUser({ ...updatedUser, userRole: e.target.value })}
-                            />
-                        </Form.Group> */}
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>

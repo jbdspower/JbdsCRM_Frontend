@@ -80,7 +80,7 @@ const ManpowerListTbl = () => {
 
     useEffect(() => {
         fetchAllProducts();
-    }, [test]);
+    }, []);
 
     const checkbox = document.querySelectorAll(".sorting_20 input");
     const motherCheckBox = document.querySelector(".sorting_asc_11 input");
@@ -228,8 +228,8 @@ const ManpowerListTbl = () => {
                             <Form.Label>Product Description</Form.Label>
                             <Form.Control
                                 type="text"
-                                value={updatedUser.email || ''}
-                                onChange={(e) => setUpdatedUser({ ...updatedUser, email: e.target.value })}
+                                value={updatedUser.description || ''}
+                                onChange={(e) => setUpdatedUser({ ...updatedUser, description: e.target.value })}
                             />
                         </Form.Group>
                         {/* <Form.Group className="mb-3" controlId="formUserDesignation">

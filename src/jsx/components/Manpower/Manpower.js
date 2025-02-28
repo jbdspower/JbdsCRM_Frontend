@@ -25,11 +25,11 @@ const Manpower = () => {
                                             {SVGICON.List}
                                         </Nav.Link>
                                     </Nav.Item>
-                                    {/* <Nav.Item as="li" className="nav-item" >
+                                    <Nav.Item as="li" className="nav-item" >
                                         <Nav.Link as="button" className="nav-link" eventKey={'Grid'}>
                                             {SVGICON.GridDots}										
                                         </Nav.Link>
-                                    </Nav.Item> */}
+                                    </Nav.Item>
                                 </Nav>
 
                                 <Link to className="btn btn-primary btn-sm ms-2"

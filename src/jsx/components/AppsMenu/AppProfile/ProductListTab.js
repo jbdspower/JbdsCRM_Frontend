@@ -37,6 +37,7 @@ const ProductListTab = () => {
                 console.log("result.data",result.data);
                 setAllUser(result.data);
                 setData(result.data.slice(0, sort));
+                setTest(test);
             })
             .catch((err) => {
                 console.log(err);
@@ -79,7 +80,7 @@ const ProductListTab = () => {
     };
 
     useEffect(() => {
-        fetchAllProducts();
+         fetchAllProducts();
     }, [test]);
 
     const checkbox = document.querySelectorAll(".sorting_20 input");
