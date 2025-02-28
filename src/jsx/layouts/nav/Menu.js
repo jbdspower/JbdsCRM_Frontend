@@ -6,6 +6,22 @@ export const MenuList = [
         title: 'JBDS POWER',
         classsChange: 'menu-title'
     },
+
+    //Lead Management
+    {
+        title: 'Lead Management',	
+        classsChange: 'mm-collapse',
+        // update:"New",
+        iconStyle:SVGICON.User,
+        content: [
+            {
+                title:"Lead",
+                to:'/leads-list',
+            },
+          
+            
+        ],
+    },
    // Dashboard
     {
         title: 'Dashboard',	
@@ -14,7 +30,7 @@ export const MenuList = [
         content: [
             
             {
-                title: 'Dashboard Light',
+                title: 'Ticket Dashboard',
                 to: '/',					
             },
             // {
@@ -45,21 +61,53 @@ export const MenuList = [
         classsChange: 'mm-collapse',
         iconStyle: SVGICON.Task,
         content: [
-            // {
-            //     title: 'Create Ticket',
-            //     to: 'create-ticket',
-            // },
             {
                 title: 'Ticket List',
                 to: 'ticket-list',
+                iconStyle: SVGICON.List, // Add icons to match dashboard behavior
             },
-            // {
-            //     title: 'Ticket Summary',
-            //     to: 'ticket-summary',
-            // },
+            {
+                title: "Manage Location",
+                to: '/location-details',
+                iconStyle: SVGICON.Map, // Add icons to match dashboard behavior
+            },
+            {
+                title: 'Product',
+                classsChange: 'mm-collapse',
+                iconStyle: SVGICON.User, // Main icon for Product
+                content: [
+                    {
+                        title: 'Product Details',
+                        to: '/product-details',
+                        iconStyle: SVGICON.Box, 
+                    },
+                    {
+                        title: 'Tool Details',
+                        to: '/tool-details',
+                        iconStyle: SVGICON.Tools,
+                    },
+                    {
+                        title: 'Manpower Details',
+                        to: '/manpower-details',
+                        iconStyle: SVGICON.People,
+                    },
+                    {
+                        title: 'Safety Items',
+                        to: '/safety-details',
+                        iconStyle: SVGICON.Shield,
+                    },
+                    {
+                        title: 'Customer Details',
+                        to: '/customer-details',
+                        iconStyle: SVGICON.UserCheck,
+                    },
+                ],
+            },
             
-        ]
+        ],
     },
+    
+    
     // {   
     //     title:'Performance',
     //     iconStyle: SVGICON.Performance,
@@ -244,91 +292,48 @@ export const MenuList = [
         ],
     },
 
-    {
-        title: 'Product',	
-        classsChange: 'mm-collapse',
-        // update:"New",
-        iconStyle:SVGICON.User,
-        content: [
-            {
-                title:"Product Details",
-                to:'/product-details',
-            },
-        ],
-    },
-    {
-        title: 'Tool',	
-        classsChange: 'mm-collapse',
-        // update:"New",
-        iconStyle:SVGICON.User,
-        content: [
-            {
-                title:"Tool Details",
-                to:'/tool-details',
-            },
-        ],
-    },
-    {
-        title: 'Manpower',	
-        classsChange: 'mm-collapse',
-        // update:"New",
-        iconStyle:SVGICON.User,
-        content: [
-            {
-                title:"Manpower Details",
-                to:'/manpower-details',
-            },
-        ],
-    },
-    {
-        title: 'Safety',	
-        classsChange: 'mm-collapse',
-        // update:"New",
-        iconStyle:SVGICON.User,
-        content: [
-            {
-                title:"Safety Items",
-                to:'/safety-details',
-            },
-        ],
-    },
-    {
-        title: 'Location',	
-        classsChange: 'mm-collapse',
-        // update:"New",
-        iconStyle:SVGICON.User,
-        content: [
-            {
-                title:"Manage Location",
-                to:'/location-details',
-            },
-        ],
-    },
-    {
-        title: 'Customer',	
-        classsChange: 'mm-collapse',
-        // update:"New",
-        iconStyle:SVGICON.User,
-        content: [
-            {
-                title:"Customer Details",
-                to:'/customer-details',
-            },
-        ],
-    },
+    // {
+    //     title: 'Product',	
+    //     classsChange: 'mm-collapse',
+    //     // update:"New",
+    //     iconStyle:SVGICON.User,
+        
+    // },
+    // {
+    //     title: 'Tool',	
+    //     classsChange: 'mm-collapse',
+    //     update:"New",
+    //     iconStyle:SVGICON.User,
+        
+    // },
+    // {
+    //     title: 'Manpower',	
+    //     classsChange: 'mm-collapse',
+    //     update:"New",
+    //     iconStyle:SVGICON.User,
+        
+    // },
+    // {
+    //     title: 'Safety',	
+    //     classsChange: 'mm-collapse',
+    //     update:"New",
+    //     iconStyle:SVGICON.User,
+        
+    // },
+    // {
+    //     title: 'Location',	
+    //     classsChange: 'mm-collapse',
+    //     update:"New",
+    //     iconStyle:SVGICON.User,
+        
+    // },
+    // {
+    //     title: 'Customer',	
+    //     classsChange: 'mm-collapse',
+    //     update:"New",
+    //     iconStyle:SVGICON.User,
+        
+    // },
 
-    {
-        title: 'Lead Management',	
-        classsChange: 'mm-collapse',
-        // update:"New",
-        iconStyle:SVGICON.User,
-        content: [
-            {
-                title:"Lead",
-                to:'/leads-list',
-            },
-          
-            
-        ],
-    },
+   
 ]

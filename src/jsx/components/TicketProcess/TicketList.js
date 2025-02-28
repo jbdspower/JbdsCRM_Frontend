@@ -446,11 +446,11 @@ const TicketList = ({ isList, filter, isExcel,search }) => {
 
                     <div className="d-flex align-items-center">
 
-                        {/* <div className="icon-box  icon-box-sm task-tab me-2">
+                        <div className="icon-box  icon-box-sm task-tab me-2">
                             <Link to={"/ticket-summary"}>
                                 {SVGICON.FourDots}
                             </Link>
-                        </div> */}
+                        </div>
                         {user && user.role !== 'employee' && <Link to={"/create-ticket"} className="btn btn-primary btn-sm ms-2"
                             onClick={() => task.current.showEmployeModal()}
                         >+ Create Ticket</Link>}

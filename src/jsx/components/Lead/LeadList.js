@@ -11,29 +11,44 @@ import QuaotationForm from "./QuotationForm";
 
 const LeadListPage = () => {
   const [list, setList] = useState([]);
-  const [showQuotForm,setQuotForm]=useState(false);
+  const [showQuotForm, setQuotForm] = useState(false);
+  const [filteredLeads, setFilteredLeads] = useState([]);
+  const [selectedCard, setSelectedCard] = useState(null); // Store only one selected index
 
-  useEffect(() => getLeadList(), [])
 
+  
+  useEffect(() => {
+    getLeadList();
+  }, []);
+  
   const getLeadList = () => {
     axiosInstance.get("getAllLead")
       .then((res) => {
         setList(res.data);
+        setFilteredLeads(res.data); // Initially show all leads
       })
       .catch((err) => {
-        {
-          swal(`${err}`);
-        }
-      })
-  }
+        swal(`${err}`);
+      });
+  };
+
+
+  // Dynamically calculate lead counters
   const leadCounters = [
-    { title: "All Leads", count: 25 },
-    { title: "Today Lead", count: 15 },
-    { title: "Quot Sent", count: 15 },
-    { title: "Hot Client", count: 15 },
-    { title: "Won Leads", count: 15 },
-    { title: "Order Lost", count: 15 },
+    { title: "All Leads", count: list.length, filter: () => list },
+    { title: "Today Lead", count: list.filter(lead => moment(lead.createdAt).isSame(moment(), 'day')).length, filter: () => list.filter(lead => moment(lead.createdAt).isSame(moment(), 'day')) },
+    { title: "Quot Sent", count: list.filter(lead => lead.Stage === "Quote Sent").length, filter: () => list.filter(lead => lead.Stage === "Quote Sent") },
+    { title: "Hot Client", count: list.filter(lead => lead.StarIcon).length, filter: () => list.filter(lead => lead.StarIcon) },
+    { title: "Won Leads", count: list.filter(lead => lead.Stage === "Won").length, filter: () => list.filter(lead => lead.Stage === "Won") },
+    { title: "Order Lost", count: list.filter(lead => lead.Stage === "Lost").length, filter: () => list.filter(lead => lead.Stage === "Lost") },
   ];
+
+
+  const handleCardClick = (index) => {
+    setSelectedCard(index);
+    setFilteredLeads(leadCounters[index].filter()); // Apply filter
+  };
+
 
   const leadList = [
     {
@@ -60,7 +75,7 @@ const LeadListPage = () => {
         const listData = _.cloneDeep(list);
         listData[idx] = obj;
         setList(listData);
-      //  getLeadList()
+        //  getLeadList()
       })
       .catch((err) => {
         swal(`${err}`, { dangerMode: true })
@@ -69,189 +84,119 @@ const LeadListPage = () => {
 
   return (
     <>
-      <LeadNavHeader getLeadList={getLeadList} IsMenu={true} mainTitle="Lead Management" pageTitle={'Leads'} parentTitle={'Lead Management'} />
-      <QuaotationForm show={showQuotForm} setShow={setQuotForm}/>
-      <div style={{ padding: "20px" }}>
-        <Row gutter={[16, 16]} style={{ marginBottom: "20px" }}>
+    <LeadNavHeader getLeadList={getLeadList} IsMenu={true} mainTitle="Lead Management" pageTitle="Leads" parentTitle="Lead Management" />
+    <QuaotationForm show={showQuotForm} setShow={setQuotForm} />
+
+    <div style={{ padding: "10px" }}>
+    <Row gutter={[0, 0]} style={{ marginBottom: "10px", padding: "2px"}}>
           {leadCounters.map((counter, index) => (
-            <Col span={4} key={index}>
-              <Card style={{ textAlign: "center" }}>
-                <h3>{counter.title}</h3>
-                <p style={{ fontSize: "24px", fontWeight: "bold", margin: 0 }}>
-                  {counter.count}
-                </p>
-              </Card>
+            <Col span={2} xs={9} lg={2} key={index}>
+              <div style={{ position: "relative", cursor: "pointer" }} onClick={() => handleCardClick(index)}>
+                <Card
+                  style={{
+                    textAlign: "center",
+                    width: "90%",
+                    height: "90px",
+                    padding: "2px",
+                    border: selectedCard === index ? "2px solid #1890ff" : "1px solid #d9d9d9",
+                    transition: "0.3s",
+                  }}
+                >
+                  <h4 style={{ fontSize: "12px" }}>{counter.title}</h4>
+                  <p style={{ fontSize: "12px", fontWeight: "bold" }}>{counter.count}</p>
+                </Card>
+                {selectedCard === index && <CheckCircleFilled style={{ position: "absolute", top: "5px", right: "15px", fontSize: "18px", color: "#1890ff" }} />}
+              </div>
             </Col>
           ))}
         </Row>
-        <div>
-          {list.map((lead, index) => (
-            <Card
-              key={index}
-              style={{ marginBottom: "16px", border: 'solid  1px' }}
-              bodyStyle={{ padding: "16px" }}
-            >
-              <Row justify="space-between" align={'middle'}>
-                {/* Lead Details */}
-                <Col style={{ border: 'solid  1px' }} span={18}>
-                  <Row>
-                    <Col span={3}>
-                      <b>Lead ID</b>
-                    </Col>
-                    <Col span={3}>
-                      <b>Lead Date</b>
-                    </Col>
-                    <Col span={3}>
-                      <b>Closure Date</b>
-                    </Col>
-                    <Col span={3}>
-                      <b>Deal Value</b>
-                    </Col>
-                    <Col span={4}>
-                      <b>Quote Value</b>
-                    </Col>
-                    <Col span={4}>
-                      <button className="btn btn-sm btn-primary">{lead.Stage}</button>
-                    </Col>
-                    <Col span={3}>
-                      <div className="mt-4">
-                        <HistoryOutlined style={{ fontSize: 25 }} />
-                        <span style={{ marginLeft: 10 }}>History</span>
-                      </div>
 
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={3}>{lead.Id || '-'}</Col>
-                    <Col span={3}>{moment(lead.createdAt).format('DD-MMM-YYYY')}</Col>
-                    <Col span={3}>{moment(lead.ClosureDate).format('DD-MMM-YYYY')}</Col>
-                    <Col span={3}>{lead.LeadValue}</Col>
-                    <Col span={4}>{lead.QuoteValue}</Col>
 
-                  </Row>
-                  <Row className="mt-5">
-                    <Col span={20}>
-                      <h3>RECD 500 Kva <EditOutlined /></h3>
-                    </Col>
-                    <Col style={{ justifyItems: 'center' }} span={4}>
-                      <h3>
-                        {lead["StarIcon"] ?
-                          <StarFilled style={{color:'#0D99FF'}}  onClick={() => handleIconUpdate(index, 'StarIcon', !lead["StarIcon"])} />
-                          : <StarOutlined onClick={() => handleIconUpdate(index, 'StarIcon', !lead["StarIcon"])} />
-                        }
-                      </h3>
-                    </Col>
-                  </Row>
-                  <Row className="mt-2">
-                    <Col span={20}>
-                      <h4>Quote Date </h4>
-                    </Col>
-                    <Col style={{ justifyItems: 'center' }} span={4}>
-                      <h3>
-                        {!lead["FollowIcon"] ?
-                          <DislikeFilled style={{color:'#0D99FF'}} onClick={() => handleIconUpdate(index, 'FollowIcon', !lead["FollowIcon"])} />
-                          : <DislikeOutlined onClick={() => handleIconUpdate(index, 'FollowIcon', !lead["FollowIcon"])} />
-                        }
-                      </h3>
-                    </Col>
-                  </Row>
-                  <Row className="mt-1">
-                    <Col span={20}>
-                      <Tag >{moment(lead.QuotaionDate).format('DD-MM-YYYY')}</Tag>
-
-                    </Col>
-                    <Col style={{ justifyItems: 'center' }} span={4}>
-                      <h3>
-                        {lead["FollowIcon"] ?
-                          <LikeFilled style={{color:'#0D99FF'}} onClick={() => handleIconUpdate(index, 'FollowIcon', !lead["FollowIcon"])} />
-                          : <LikeOutlined onClick={() => handleIconUpdate(index, 'FollowIcon', !lead["FollowIcon"])} />
-                        }
-                      </h3>
-                    </Col>
-                  </Row>
-                  <Row className="mt-3">
-                    <Col span={20}>
-                      <Steps
-                        items={[
-                          {
-                            title: 'Pending',
-                            status: 'finish',
-                            icon: <CheckCircleFilled />,
-                          },
-                          {
-                            title: 'Contacted',
-                            status: 'finish',
-                            icon: <PhoneOutlined />,
-                          },
-                          {
-                            title: 'Quote Sent',
-                            status: 'finish',
-                            icon: <SaveOutlined />,
-                          },
-                          {
-                            title: 'Meeting Done',
-                            status: 'finish',
-                            icon: <UsergroupAddOutlined />,
-                          },
-                        ]}
-                      />
-                    </Col>
-                  </Row>
-                  <Row style={{ borderTop: '1px solid', padding: 0 }} className="mt-3 p-0">
-                    <Col span={10}>
-                      <h6>Next Follow Up</h6>
-                      <span>07-Dec-2024 <EditOutlined /></span>
-                    </Col>
-                    <Col className="mt-3" span={14}>
-                      <Button color="gray" shape="round" size='small'>
-                        Call 0 / 0
-                      </Button>
-                      <Button style={{ marginLeft: 10 }} color="gray" shape="round" size='small'>
-                        Meeting 0 / 0
-                      </Button>
-                      <Button onClick={()=>setQuotForm(true)} style={{ marginLeft: 10, background: '#5D3FD3', color: 'white' }} shape="round" size='small'>
-                        Send Quotaion
-                      </Button>
-                      <Button style={{ marginLeft: 10, background: '#5D3FD3', color: 'white' }} shape="round" size='small'>
-                        View Quot
-                      </Button>
-                    </Col>
-                  </Row>
+      <div style={{ maxHeight: "calc(100vh - 20px)", overflowY: "auto" }}>
+      {filteredLeads.map((lead, index) => (
+        <Card key={index} style={{ marginBottom: "6px", padding: "6px" }}>
+        <Row gutter={[4, 4]}>
+          <Col xs={24} lg={18}>
+            <Row gutter={[3, 3]}>
+              {[
+                { label: "Lead ID", value: lead.Id || "-" },
+                { label: "Lead Date", value: moment(lead.createdAt).format("DD-MMM-YYYY") },
+                { label: "Closure Date", value: moment(lead.ClosureDate).format("DD-MMM-YYYY") },
+                { label: "Deal Value", value: lead.LeadValue },
+                { label: "Quote Value", value: lead.QuoteValue },
+              ].map((item, idx) => (
+                <Col xs={12} sm={8} md={6} key={idx}>
+                  <b>{item.label}</b>
+                  <p style={{ marginBottom: "2px" }}>{item.value}</p>
                 </Col>
-                <Col style={{ border: 'solid  1px', padding: 6, height: 378 }} span={6}>
-                  <div style={{ borderBottom: 'solid  1px', marginBottom: 2 }} >
-                    <h4>FROM</h4>
-                    <p><b>Company Name:</b> {lead.Company}</p>
-                    <p><b>Contact Person:</b>{lead.Name}</p>
-                    <p><b>Mobile:</b> {lead.Mobile}</p>
-                    <p><b>Email:</b> {lead.Email || "-"}</p>
-                    <p><b>Location:</b> {lead.Address}</p>
-                    <Space direction="vertical" style={{ width: "100%" }}>
-                      <Space>
-                        <Button icon={<EyeOutlined />} style={{ color: '#5D3FD3' }} type="default" size="small">
-                          View More
-                        </Button>
-                        <Button style={{ color: '#5D3FD3', marginLeft: 70 }} icon={<EditOutlined />} size="small">Edit</Button>
-                      </Space>
-                    </Space>
-                  </div>
-                  <div>
-                    <p style={{ color: 'black' }}>TO <Button style={{ marginLeft: 120, background: '#5D3FD3', color: 'white' }} shape="round" size='small'>
-                      + Assign Lead
-                    </Button></p>
-                    <p style={{ lineHeight: 0, marginTop: 0 }}>Sandeep , Rahul</p>
-                    <div style={{ display: 'flex' }}><PhoneFilled style={{ color: 'green', fontSize: 30 }} />
-                      <WhatsAppOutlined style={{ marginLeft: 60, color: 'green', fontSize: 30 }} />
-                      <MailOutlined style={{ marginLeft: 60, color: 'green', fontSize: 30 }} /></div>
-                  </div>
-                </Col>
-              </Row>
-            </Card>
-          ))}
-        </div>
+              ))}
+              <Col xs={24} sm={6}>
+                <Button className="btn btn-sm btn-primary">{lead.Stage}</Button>
+              </Col>
+              <Col xs={24} sm={6}>
+                <HistoryOutlined style={{ fontSize: 16 }} /> <span>History</span>
+              </Col>
+            </Row>
+            <Row justify="space-between" align="middle" style={{ marginTop: 4 }}>
+              <Col><h4 style={{ margin: 0, fontSize: "14px" }}>RECD 500 Kva <EditOutlined /></h4></Col>
+              <Col>{lead.StarIcon ? <StarFilled style={{ color: "#0D99FF" }} /> : <StarOutlined />}</Col>
+            </Row>
+            <Row justify="space-between" align="middle" style={{ marginTop: 2 }}>
+              <Col><h4 style={{ margin: 0, fontSize: "14px" }}>Quote Date</h4></Col>
+              <Col>{lead.FollowIcon ? <LikeFilled style={{ color: "#0D99FF" }} /> : <LikeOutlined />}</Col>
+            </Row>
+            <Row><Col><Tag>{moment(lead.QuotaionDate).format("DD-MM-YYYY")}</Tag></Col></Row>
+            <Steps
+              size="small"
+              items={[
+                { title: 'Pending', status: 'finish', icon: <CheckCircleFilled /> },
+                { title: 'Contacted', status: 'finish', icon: <PhoneOutlined /> },
+                { title: 'Quote Sent', status: 'finish', icon: <SaveOutlined /> },
+                { title: 'Meeting Done', status: 'finish', icon: <UsergroupAddOutlined /> },
+              ]}
+            />
+            <Row justify="space-between" style={{ marginTop: 4, borderTop: "1px solid", paddingTop: 2 }}>
+              <Col><h6 style={{ margin: 0, fontSize: "13px" }}>Next Follow Up</h6><span>07-Dec-2024 <EditOutlined /></span></Col>
+              <Col>
+                <Button size="small">Call 0 / 0</Button>
+                <Button size="small" style={{ marginLeft: 3 }}>Meeting 0 / 0</Button>
+                <Button size="small" style={{ marginLeft: 3, background: "#5D3FD3", color: "white" }}>Send Quotation</Button>
+                <Button size="small" style={{ marginLeft: 3, background: "#5D3FD3", color: "white" }}>View Quote</Button>
+              </Col>
+            </Row>
+          </Col>
+      
+          <Col xs={24} lg={6} style={{ padding: 2 }}>
+            <div style={{ borderBottom: "1px solid" }}>
+              <h4 style={{ marginBottom: 2, fontSize: "14px" }}>FROM</h4>
+              <p style={{ marginBottom: 2, fontSize: "13px" }}><b>Company:</b> {lead.Company}</p>
+              <p style={{ marginBottom: 2, fontSize: "13px" }}><b>Contact:</b> {lead.Name}</p>
+              <p style={{ marginBottom: 2, fontSize: "13px" }}><b>Mobile:</b> {lead.Mobile}</p>
+              <p style={{ marginBottom: 2, fontSize: "13px" }}><b>Email:</b> {lead.Email || "-"}</p>
+              <p style={{ marginBottom: 2, fontSize: "13px" }}><b>Location:</b> {lead.Address}</p>
+              <p style={{ marginBottom: 2, fontSize: "13px" }}>
+                TO <Button size="small" style={{ float: "right", background: "#5D3FD3", color: "white" }}>+ Assign Lead</Button>
+              </p>
+              <p style={{ marginBottom: 2, fontSize: "13px" }}>Sandeep, Rahul</p>
+              <Space>
+                <PhoneFilled style={{ color: "green", fontSize: 16 }} />
+                <WhatsAppOutlined style={{ color: "green", fontSize: 16 }} />
+                <MailOutlined style={{ color: "green", fontSize: 16 }} />
+              </Space>
+              <Space style={{ marginTop: 2 }}>
+                <Button icon={<EyeOutlined />} size="small">View</Button>
+                <Button icon={<EditOutlined />} size="small">Edit</Button>
+              </Space>
+            </div>
+          </Col>
+        </Row>
+      </Card>
+      
+      
+        ))}
       </div>
-    </>
+    </div>
+  </>
   );
 };
-
 export default LeadListPage;
