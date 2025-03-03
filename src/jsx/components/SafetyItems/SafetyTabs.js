@@ -51,7 +51,7 @@ const SafetyTabsList = () => {
     };
 
     const handleDeleteUser = (productId) => {
-        axios.patch(`${api.api}safetyItems/${productId}`)
+        axios.delete(`${api.api}safetyItems/${productId}`)
             .then(() => {
                 fetchAllProducts();
             })
@@ -160,7 +160,7 @@ const SafetyTabsList = () => {
                                                     </Dropdown.Toggle>
                                                     <Dropdown.Menu className="dropdown-menu-right" align="end">
                                                         <Dropdown.Item onClick={() => handleEditUser(item)}>Edit</Dropdown.Item>
-                                                        <Dropdown.Item onClick={() => handleDeleteUser(item._id)}>Disable</Dropdown.Item>
+                                                        <Dropdown.Item onClick={() => handleDeleteUser(item)}>Delete</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </Dropdown>
                                             </td>
@@ -217,7 +217,7 @@ const SafetyTabsList = () => {
                 <Modal.Body>
                     <Form>
                         <Form.Group className="mb-3" controlId="formUserName">
-                            <Form.Label>Product Name</Form.Label>
+                            <Form.Label>Safety Item Name</Form.Label>
                             <Form.Control
                                 type="text"
                                 value={updatedUser.name || ''}
@@ -225,11 +225,11 @@ const SafetyTabsList = () => {
                             />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formUserEmail">
-                            <Form.Label>Product Description</Form.Label>
+                            <Form.Label>Safety Item Description</Form.Label>
                             <Form.Control
                                 type="text"
-                                value={updatedUser.email || ''}
-                                onChange={(e) => setUpdatedUser({ ...updatedUser, email: e.target.value })}
+                                value={updatedUser.description || ''}
+                                onChange={(e) => setUpdatedUser({ ...updatedUser, description: e.target.value })}
                             />
                         </Form.Group>
                         {/* <Form.Group className="mb-3" controlId="formUserDesignation">
