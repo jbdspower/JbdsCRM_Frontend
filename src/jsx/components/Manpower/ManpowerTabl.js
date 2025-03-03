@@ -21,7 +21,7 @@ import api from '../../config.json';
 //     filename: "csvfile.csv"
 // };
 
-const ManpowerListTbl = () => {
+const ManpowerListTbl = (loading) => {
     const [allUser, setAllUser] = useState([]);
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
@@ -80,7 +80,7 @@ const ManpowerListTbl = () => {
 
     useEffect(() => {
         fetchAllProducts();
-    }, []);
+    }, [loading]);
 
     const checkbox = document.querySelectorAll(".sorting_20 input");
     const motherCheckBox = document.querySelector(".sorting_asc_11 input");

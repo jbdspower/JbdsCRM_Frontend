@@ -1,4 +1,4 @@
-import React,{useRef} from 'react';
+import React,{useRef, useState} from 'react';
 import {Link} from 'react-router-dom';
 import {Tab, Nav} from 'react-bootstrap';
 import MainPagetitle from '../../../layouts/MainPagetitle';
@@ -11,6 +11,7 @@ import ProductListTab from './ProductListTab';
 const Products = () => {
     const productdata = useRef();
     const categorydata = useRef();
+    const [loading, setLoading] = useState(false);
     return (
         <>
             <MainPagetitle mainTitle="Dashboard" pageTitle="User" parentTitle="Management"/>
@@ -48,7 +49,7 @@ const Products = () => {
                                     <GridTab />
                                 </Tab.Pane> */}
                                 <Tab.Pane eventKey={'List'}>
-                                    <ProductListTab />
+                                    <ProductListTab loading={loading} setLoading={setLoading}/>
                                 </Tab.Pane>
                             </Tab.Content>
                         </div>
@@ -56,10 +57,12 @@ const Products = () => {
                 </div>
             </div>    
             <ProductForm 
+                setLoading={setLoading}
                 ref={productdata}
                 Title="Add User"
             />
             <CateogryForm 
+                setLoading={setLoading}
                 ref={categorydata}
                 Title="Add User"
             />         

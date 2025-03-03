@@ -21,11 +21,10 @@ import api from '../../../config.json';
 //     filename: "csvfile.csv"
 // };
 
-const ProductListTab = () => {
+const ProductListTab = (loading, setLoading) => {
     const [allUser, setAllUser] = useState([]);
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
-    const [test, setTest] = useState(0);
     const [showEditModal, setShowEditModal] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
     const [updatedUser, setUpdatedUser] = useState({});
@@ -37,7 +36,6 @@ const ProductListTab = () => {
                 console.log("result.data",result.data);
                 setAllUser(result.data);
                 setData(result.data.slice(0, sort));
-                setTest(test);
             })
             .catch((err) => {
                 console.log(err);
@@ -81,7 +79,7 @@ const ProductListTab = () => {
 
     useEffect(() => {
          fetchAllProducts();
-    }, [test]);
+    }, [loading]);
 
     const checkbox = document.querySelectorAll(".sorting_20 input");
     const motherCheckBox = document.querySelector(".sorting_asc_11 input");

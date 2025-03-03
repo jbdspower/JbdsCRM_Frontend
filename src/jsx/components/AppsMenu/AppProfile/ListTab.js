@@ -22,7 +22,7 @@ const csvlink = {
     filename: "csvfile.csv"
 };
 
-const ListTab = ({ filter = [],isList }) => {
+const ListTab = ({ filter = [],isList, loading }) => {
     const [allUser, setAllUser] = useState([]);
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
@@ -82,7 +82,7 @@ const ListTab = ({ filter = [],isList }) => {
 
     useEffect(() => {
         fetchAllUsers();
-    }, [test]);
+    }, [loading]);
 
     const checkbox = document.querySelectorAll(".sorting_20 input");
     const motherCheckBox = document.querySelector(".sorting_asc_11 input");

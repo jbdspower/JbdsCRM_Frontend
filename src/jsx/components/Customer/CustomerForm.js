@@ -9,7 +9,6 @@ import Autocomplete from '../TicketProcess/AutoComplete';
 const CustomerForm = forwardRef((props, ref) => {
     const [addEmployee, setAddEmployee] = useState(false);
     const [companyList, setCompanyList] = useState([])
-
     // State variables for form input values
     const [obj, setObj] = useState('');
 
@@ -28,13 +27,13 @@ const CustomerForm = forwardRef((props, ref) => {
     }, [])
 
     const fetchAllCustomer = () => {
-        axios.get(`${api.api}customer`)
-            .then((result) => {
-                setCompanyList(result.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+    axios.get(`${api.api}customer`)
+        .then((result) => {
+            setCompanyList(result.data);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
     };
 
     // useEffect(() => {
@@ -81,7 +80,7 @@ const CustomerForm = forwardRef((props, ref) => {
         if (!validateForm()) {
             return;
         }
-
+        props.setLoading(true)
         try {
             const response = await axios.post(api.api + "customer", obj);
 
@@ -97,6 +96,9 @@ const CustomerForm = forwardRef((props, ref) => {
             }
         } catch (error) {
             console.error('Error:', error);
+        }
+        finally{
+            props.setLoading(false)
         }
     };
 
@@ -119,10 +121,10 @@ const CustomerForm = forwardRef((props, ref) => {
                                     {errors.name && <small className="text-danger">{errors.name}</small>}
                                 </div>
                                 <div className="col-xl-6 mb-3">
-                                <label htmlFor="exampleFormControlInput3" className="form-label">Company <span className="text-danger">*</span></label>
-                                    <Autocomplete suggestions={companyList.map(x => x.companyName)} auto={false} inputData={obj} name={"companyName"} handleOnChange={handleOnChange} />
-                                    {/* <label htmlFor="exampleFormControlInput3" className="form-label">Company <span className="text-danger">*</span></label>
-                                    <input type="text" name='companyName' className="form-control" id="exampleFormControlInput3" value={obj.companyName} onChange={handleOnChange} placeholder="" /> */}
+                                {/* <label htmlFor="exampleFormControlInput3" className="form-label">Company <span className="text-danger">*</span></label> */}
+                                    {/* <Autocomplete suggestions={companyList.map(x => x.companyName)} auto={false} inputData={obj} name={"companyName"} handleOnChange={handleOnChange} /> */}
+                                    <label htmlFor="exampleFormControlInput3" className="form-label">Company <span className="text-danger">*</span></label>
+                                    <input type="text" name='companyName' className="form-control" id="exampleFormControlInput3" value={obj.companyName} onChange={handleOnChange} placeholder="" />
                                     {errors.companyName && <small className="text-danger">{errors.companyName}</small>}
                                 </div>
                                 <div className="col-xl-6 mb-3">

@@ -1,4 +1,4 @@
-import React,{useRef} from 'react';
+import React,{useRef, useState} from 'react';
 import {Link} from 'react-router-dom';
 import {Tab, Nav} from 'react-bootstrap';
 import MainPagetitle from '../../layouts/MainPagetitle';
@@ -10,6 +10,7 @@ import ManpowerListTbl from './ManpowerTabl';
 const Manpower = () => {
     const productdata = useRef();
     const categorydata = useRef();
+    const [loading, setLoading] = useState(false);
     return (
         <>
             <MainPagetitle mainTitle="Dashboard" pageTitle="User" parentTitle="Management"/>
@@ -44,7 +45,7 @@ const Manpower = () => {
                                     <GridTab />
                                 </Tab.Pane> */}
                                 <Tab.Pane eventKey={'List'}>
-                                    <ManpowerListTbl />
+                                    <ManpowerListTbl loading={loading} setLoading={setLoading}/>
                                 </Tab.Pane>
                             </Tab.Content>
                         </div>
@@ -53,6 +54,7 @@ const Manpower = () => {
             </div>    
           
             <ManpowerForm 
+                setLoading={setLoading}
                 ref={categorydata}
                 Title="Add Tool"
             />         

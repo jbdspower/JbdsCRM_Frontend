@@ -1,4 +1,4 @@
-import React,{useRef} from 'react';
+import React,{useRef, useState} from 'react';
 import {Link} from 'react-router-dom';
 import {Tab, Nav} from 'react-bootstrap';
 import MainPagetitle from '../../layouts/MainPagetitle';
@@ -10,6 +10,7 @@ import CustomerListTbl from './CustomerTabl';
 const Customer = () => {
     const productdata = useRef();
     const categorydata = useRef();
+    const [loading, setLoading] = useState(false)
     return (
         <>
             <MainPagetitle mainTitle="Dashboard" pageTitle="Customer" parentTitle="Management"/>
@@ -32,7 +33,7 @@ const Customer = () => {
                                     </Nav.Item> */}
                                 </Nav>
 
-                                <Link to className="btn btn-primary btn-sm ms-2"
+                                <Link to className="btn btn-primary btn-sm ms-2" style={{border: "3px solid green"}}
                                     onClick={()=>categorydata.current.showEmployeModal()}
                                 >+ Add Customer
                                 </Link>
@@ -44,7 +45,7 @@ const Customer = () => {
                                     <GridTab />
                                 </Tab.Pane> */}
                                 <Tab.Pane eventKey={'List'}>
-                                    <CustomerListTbl />
+                                    <CustomerListTbl loading={loading} setLoading={setLoading} />
                                 </Tab.Pane>
                             </Tab.Content>
                         </div>
@@ -53,6 +54,7 @@ const Customer = () => {
             </div>    
           
             <CustomerForm 
+                setLoading={setLoading}
                 ref={categorydata}
                 Title="Add Customer"
             />         

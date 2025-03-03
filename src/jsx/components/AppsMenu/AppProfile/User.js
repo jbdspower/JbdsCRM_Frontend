@@ -1,4 +1,4 @@
-import React,{useRef} from 'react';
+import React,{useRef, useState} from 'react';
 import {Link} from 'react-router-dom';
 import {Tab, Nav} from 'react-bootstrap';
 import MainPagetitle from '../../../layouts/MainPagetitle';
@@ -9,8 +9,7 @@ import ListTab from './ListTab';
 
 const User = ({isList = false, filter, isExcel}) => {
     const userdata = useRef();
-    console.log("user daataa",userdata);
-    console.log("is list", isList)
+    const [loading, setLoading] = useState(false)
     return (
         <>
            { !isList &&  <MainPagetitle mainTitle="Dashboard" pageTitle="User" parentTitle="Management"/>}
@@ -33,13 +32,13 @@ const User = ({isList = false, filter, isExcel}) => {
                                     </Nav.Item> */}
                                 </Nav>
                                 <Link to className="btn btn-primary btn-sm ms-2"
-                                    // onClick={()=>userdata.current.showEmployeModal()}
+                                    onClick={()=>userdata.current.showEmployeModal()}
                                 >+ Add User
                                 </Link>
                             </div>
                         </div>}
                         <div className="col-xl-12 active-p">
-                        <ListTab filter={filter} isList={isList}  />
+                        <ListTab filter={filter} isList={isList} loading={loading} setLoading={setLoading} />
                             {/* <Tab.Content>
                                 <Tab.Pane  eventKey={'Grid'}>
                                     <GridTab />
@@ -53,6 +52,7 @@ const User = ({isList = false, filter, isExcel}) => {
                 </div>
             </div>    
             <EmployeeOffcanvas 
+                setLoading={setLoading}
                 ref={userdata}
                 Title="Add User"
             />         

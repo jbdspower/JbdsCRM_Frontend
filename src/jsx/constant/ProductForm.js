@@ -63,7 +63,7 @@ const ProductForm = forwardRef((props, ref) => {
         if (!validateForm()) {
             return;
         }
-
+        props.setLoading(true)
         const employeeData = {
             name: productName,
             description: productDescription,
@@ -89,6 +89,9 @@ const ProductForm = forwardRef((props, ref) => {
             }
         } catch (error) {
             console.error('Error:', error);
+        }
+        finally{
+            props.setLoading(false)
         }
     };
     // const nav = useNavigate();

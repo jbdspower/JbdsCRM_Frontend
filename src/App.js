@@ -5,7 +5,7 @@ import Index from "./jsx";
 import { connect, useDispatch } from 'react-redux';
 import {  Route, Routes, useLocation , useNavigate , useParams } from 'react-router-dom';
 // action
-// import { checkAutoLogin } from './services/AuthService';
+import { checkAutoLogin } from './services/AuthService';
 
 import { isAuthenticated } from './store/selectors/AuthSelectors';
 
@@ -43,7 +43,7 @@ function App (props) {
     const dispatch = useDispatch();
     const navigate = useNavigate();    
       useEffect(() => {
-        // checkAutoLogin(dispatch, navigate);    
+        checkAutoLogin(dispatch, navigate);    
       }, []);
     
     let routeblog = (         

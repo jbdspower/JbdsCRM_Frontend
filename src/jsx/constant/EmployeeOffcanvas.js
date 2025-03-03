@@ -81,7 +81,7 @@ const EmployeeOffcanvas = forwardRef((props, ref) => {
         if (!validateForm()) {
             return;
         }
-
+        props.setLoading(true)
         const employeeData = {
             name: employeeName,
             email: employeeEmail,
@@ -125,6 +125,9 @@ const EmployeeOffcanvas = forwardRef((props, ref) => {
             }
         } catch (error) {
             console.error('Error:', error);
+        }
+        finally{
+            props.setLoading(false)
         }
     };
     // const nav = useNavigate();

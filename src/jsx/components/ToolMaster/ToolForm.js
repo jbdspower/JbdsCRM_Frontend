@@ -56,6 +56,7 @@ const ToolForm = forwardRef((props, ref) => {
         if (!validateForm()) {
             return;
         }
+        props.setLoading(true)
 
         const employeeData = {
             name: categoryName,
@@ -80,6 +81,9 @@ const ToolForm = forwardRef((props, ref) => {
             }
         } catch (error) {
             console.error('Error:', error);
+        }
+        finally{
+            props.setLoading(false)
         }
     };
 

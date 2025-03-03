@@ -1,4 +1,4 @@
-import React,{useRef} from 'react';
+import React,{useRef, useState} from 'react';
 import {Link} from 'react-router-dom';
 import {Tab, Nav} from 'react-bootstrap';
 import MainPagetitle from '../../layouts/MainPagetitle';
@@ -10,6 +10,7 @@ import ToolListTbl from './ToolListTabl';
 const Tool = () => {
     const productdata = useRef();
     const categorydata = useRef();
+    const [loading, setLoading] = useState();
     return (
         <>
             <MainPagetitle mainTitle="Dashboard" pageTitle="User" parentTitle="Management"/>
@@ -44,7 +45,7 @@ const Tool = () => {
                                     <GridTab />
                                 </Tab.Pane> */}
                                 <Tab.Pane eventKey={'List'}>
-                                    <ToolListTbl />
+                                    <ToolListTbl loading={loading} setLoading={setLoading}/>
                                 </Tab.Pane>
                             </Tab.Content>
                         </div>
@@ -53,6 +54,7 @@ const Tool = () => {
             </div>    
           
             <ToolForm 
+                setLoading={setLoading}
                 ref={categorydata}
                 Title="Add Tool"
             />         
