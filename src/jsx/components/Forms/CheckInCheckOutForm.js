@@ -8,6 +8,12 @@ import { Select } from 'antd';
 import CustomSelect from './CustomSelect';
 import axiosInstance from '../../../services/AxiosInstance';
 import _ from 'lodash'
+import { Button } from "antd"; // Import Button from Ant Design
+import { DownloadOutlined } from "@ant-design/icons";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import notoFont from "./NotoSans-Regular.js";
+
 
 const CheckInCheckOutForm = ({ setCustomInput, setFiles, allFiles = [], info = {}, ticketData = {}, customInput = {} }) => {
     const [category, setCategory] = useState([])
@@ -15,6 +21,111 @@ const CheckInCheckOutForm = ({ setCustomInput, setFiles, allFiles = [], info = {
     const [machineryTool, setMachineryTool] = useState([])
     const [manpower, setManpower] = useState([])
     const [consumables, setConsumables] = useState([])
+
+    const handleDownloadPDF = () => {
+        const doc = new jsPDF();
+
+        // Add Logo
+        const logoUrl = "/jbds_power_logo.jpg"; // Replace with actual URL
+        doc.addImage(logoUrl, "PNG", 10, 10, 40, 15); // Positioning (x, y, width, height)
+        
+        let y = 30; // Start position after the logo
+
+        // Title
+        doc.setFontSize(18);
+        doc.setFont("helvetica", "bold");
+        doc.text("JBDS Power Project International power limited", 105, y, { align: "center" });
+        y += 10;
+
+        // Divider Line
+        doc.setDrawColor(0); // Black color
+        doc.setLineWidth(0.5);
+        doc.line(10, y, 200, y);
+        y += 6;
+
+        // Section - Client Details
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("Client Details", 10, y);
+        y += 6;
+
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Name: ${info.ClientName}`, 10, y);
+        y += 6;
+        doc.text(`Company: ${info.CompanyName}`, 10, y);
+        y += 6;
+        doc.text(`Email: ${info.ClientEmailId}`, 10, y);
+        y += 6;
+        doc.text(`Phone: ${info.ClientMobNumber}`, 10, y);
+        y += 6;
+        doc.text(`Address: ${info.ClientAddress}`, 10, y);
+        y += 10;
+
+        // Divider
+        doc.line(10, y, 200, y);
+        y += 6;
+
+        // Section - Ticket Details
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("Ticket Details", 10, y);
+        y += 6;
+
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Status: ${ticketData.Status || '-'}`, 10, y);
+        y += 6;
+        doc.text(`Priority: ${ticketData.Priority || '-'}`, 10, y);
+        y += 6;
+        doc.text(`PO Ref No: ${info.PORefNo || "-"}`, 10, y);
+        y += 6;
+        doc.text(`Invoice Ref No: ${info.InvoiceRefNo || "-"}`, 10, y);
+        y += 10;
+
+        // Divider
+        doc.line(10, y, 200, y);
+        y += 6;
+
+        // Section - Complaint Description
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("Complaint Description", 10, y);
+        y += 6;
+
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text(info.ComplaintDesc || "-", 10, y, { maxWidth: 180 });
+        y += 10;
+
+        // Divider
+        doc.line(10, y, 200, y);
+        y += 6;
+
+        // Section - Attachments (Image URLs)
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("Attachments", 10, y);
+        y += 6;
+
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        if (info.Files && info.Files.length > 0) {
+            info.Files.forEach((file, index) => {
+                doc.text(`${index + 1}. ${config.fileUrl + file.filename}`, 10, y);
+                y += 6;
+            });
+        } else {
+            doc.text("No attachments available.", 10, y);
+            y += 6;
+        }
+
+        // Save the PDF
+        doc.save("ticket_details.pdf");
+    };
+
+
+      
 
     useEffect(() => {
         getCategory()
@@ -112,13 +223,15 @@ const CheckInCheckOutForm = ({ setCustomInput, setFiles, allFiles = [], info = {
     }
 
     const downloadFileURL = (filename) => {
-        const link = document.createElement('a');
-        link.href = config.fileUrl + filename;
-        link.setAttribute('download', filename); // this will download the file
+        const fileUrl = `${config.fileUrl}${filename}`; // Construct full file URL
+        const link = document.createElement("a");
+        link.href = fileUrl;
+        link.download = filename; // Ensures it prompts for download
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     };
+    
 
     const downloadFile = (file) => {
         // Assuming 'file' is the file object containing the blob
@@ -207,7 +320,17 @@ const CheckInCheckOutForm = ({ setCustomInput, setFiles, allFiles = [], info = {
 
 
     return (
+
         <div className='p-2'>
+            <Button
+                type="primary"
+                icon={<DownloadOutlined />}
+                onClick={handleDownloadPDF}
+                style={{ margin: "10px", float: "right"}}
+            >
+            </Button>
+
+			<div id="ticket-list-container" style={{ maxHeight: "calc(100%)", overflowY: "auto" }}>
             <div className='row'>
                 <div className='col-sm-3'>
                     <strong className='textStyleStrong'>Client Detail:</strong><br />
@@ -263,9 +386,10 @@ const CheckInCheckOutForm = ({ setCustomInput, setFiles, allFiles = [], info = {
                                         <img style={{ width: 20, height: 20, marginLeft: 5 }} src={config.fileUrl + one.filename} alt={one.filename} />
 
                                         {/* Download icon with link */}
-                                        <a href='#' onClick={() => downloadFileURL(one.filename)} style={{ marginLeft: 10 }}>
-                                            <i className="fa fa-download" aria-hidden="true"></i>
+                                        <a href="#" onClick={() => downloadFileURL(one.filename)} style={{ marginLeft: 10 }}>
+                                            <i className="fa fa-download" aria-hidden="true"></i>addddj
                                         </a>
+
                                     </div>
                                 );
                             })}
@@ -508,6 +632,7 @@ const CheckInCheckOutForm = ({ setCustomInput, setFiles, allFiles = [], info = {
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     );

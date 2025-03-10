@@ -9,7 +9,21 @@ import Autocomplete from '../TicketProcess/AutoComplete';
 const DynamicForm = ({ customerList, errors = {}, handleOnChangeTable, inputData = {}, fields, handleOnChange, files = [], handleRemoveFile, setFiles, prevStateData, CurrentProcess = {} }) => {
     const [selectOptions, setSelectOptions] = useState({});
     const [showCapture, setShowCapture] = useState(false)
-    const [captureField, setCaptureField] = useState({})
+    const [captureField, setCaptureField] = useState({});
+    const [selectedCompanyName, setSelectedCompanyName] = useState('');
+
+    const handleCompanyNameChange = (value) => {
+        setSelectedCompanyName(value);
+        handleOnChange({ target: { name: "CompanyName", value } });
+    };
+
+    const filteredClientNames = selectedCompanyName
+        ? customerList
+              .filter(x => x.companyName.toLowerCase() === selectedCompanyName.toLowerCase())
+              .map(x => x.name)
+        : [];
+
+
     useEffect(() => {
         fields.forEach(field => {
             if (field.type === 'select' && field.apiEndpoint) {
@@ -148,7 +162,6 @@ const DynamicForm = ({ customerList, errors = {}, handleOnChangeTable, inputData
         }
         document.body.removeChild(link);
     }
-    const suggestions = ["Apple", "Banana", "Cherry", "Date", "Fig", "Grape"];
 
     const renderField = (field) => {
         switch (field.type) {
@@ -156,13 +169,34 @@ const DynamicForm = ({ customerList, errors = {}, handleOnChangeTable, inputData
                 if (field.name == "CompanyName") {
                     const name=customerList.filter(x=>!inputData["ClientName"]||(x.companyName &&inputData["ClientName"] && x.name.toLowerCase().startsWith(inputData["ClientName"].toLowerCase()))).map(x=>x.companyName)
                     return <div className="col-lg-4 mb-3">
-                        <Autocomplete auto={true} inputData={inputData} name={field.name} handleOnChange={handleOnChange} suggestions={[...new Set(name)]} />
-                    </div>
+                    <Autocomplete
+                        auto={true}
+                        inputData={inputData}
+                        name="CompanyName"
+                        handleOnChange={(e) => handleCompanyNameChange(e.target.value)}
+                        suggestions={[...new Set(customerList.map(x => x.companyName))]}
+                    />
+                </div>
                 }else if(field.name=="ClientName"){
                     const name=customerList.filter(x=>!inputData["CompanyName"] || (x.name && inputData["CompanyName"] && x.companyName.toLowerCase().startsWith(inputData["CompanyName"].toLowerCase()))).map(x=>x.name)
                     return <div className="col-lg-4 mb-3">
-                            <Autocomplete auto={true} inputData={inputData} name={field.name} handleOnChange={handleOnChange} suggestions={[...new Set(name)]} />
-                        </div>
+                    <input
+                        type="text"
+                        name="ClientName"
+                        onChange={handleOnChange}
+                        value={inputData["ClientName"] || ''}
+                        disabled={!selectedCompanyName} // Disable if no company is selected
+                        placeholder="Enter or select client name"
+                        list="clientNamesList"
+                        style={{padding: "8px", border: "1px solid #ccc", borderRadius: "5px", width: "100%"}}
+                    />
+                    <datalist id="clientNamesList">
+                        {filteredClientNames.map((name, index) => (
+                            <option key={index} value={name} />
+                        ))}
+                    </datalist>
+                </div>
+                
                 }else{
                     return <></>
                 }

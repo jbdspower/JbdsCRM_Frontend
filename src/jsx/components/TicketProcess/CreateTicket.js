@@ -8,6 +8,9 @@ import Webcam from "react-webcam";
 import { Button, Modal } from "antd";
 import _ from "lodash";
 import process from './Process.json'
+import { DownloadOutlined } from "@ant-design/icons";
+import jsPDF from "jspdf";
+// import html2canvas from "html2canvas";
 
 // import DynamicTable from "../../utill/testingdynamictable";
 // import AlertMessage from "../../utill/AlertMessage";
@@ -45,6 +48,10 @@ const CreateTicket = ({ history, location, NextStateApi, WorkFlowName }) => {
 	const navigate = useNavigate();
 	const params = useParams()
 	const user = JSON.parse(localStorage.getItem('userDetails'))
+
+	  
+	  
+
 
 	useEffect(() => {
 		axios
@@ -345,6 +352,8 @@ const CreateTicket = ({ history, location, NextStateApi, WorkFlowName }) => {
 	return (
 		<>
 			<MainPagetitle mainTitle="Ticket" pageTitle={'Ticket'} parentTitle={'Home'} />
+
+
 			<div className="container-fluid text-right">
 				{/* <div className="text-center heading-bg mb-4 shadow-sm">
 					<h4 className=" p-0 m-0">Ticket Process </h4>
@@ -388,6 +397,7 @@ const CreateTicket = ({ history, location, NextStateApi, WorkFlowName }) => {
 				</div>}
 
 			</div>
+
 			{(["manager","employee"].includes(user.role)|| (currentState.StateName == "Create SR"))
 			&& <FormValidation currentState={currentState.StateName}
 				CurrentProcess={currentState.CurrentProcess}
@@ -396,7 +406,6 @@ const CreateTicket = ({ history, location, NextStateApi, WorkFlowName }) => {
 				Controls={currentState.Control}
 				onSubmit={(control, data, file) => handleGoNext(control, data, file)}
 				Fields={currentState.Fields} />}
-
 
 		</>
 	);

@@ -16,7 +16,8 @@ import axiosInstance from '../../../services/AxiosInstance';
 import swal from 'sweetalert';
 import { exportTableToExcel } from '../../../util/common';
 import { Select } from 'antd';
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 
 
@@ -55,7 +56,7 @@ const headersTitle = [
 
 
 
-const TicketList = ({ isList, filter, isExcel,search }) => {
+const TicketList = ({ isList, filter, isExcel, search }) => {
     const [show, setShow] = useState(false);
     const [showTab, setShowTab] = useState("");
     const [selectedTicket, setSelectedTicket] = useState({});
@@ -68,6 +69,24 @@ const TicketList = ({ isList, filter, isExcel,search }) => {
     const [assignee, setAssignee] = useState([])
     const priority = ["Urgent", "High", "Low", "Medium"]
     const status = ["Active", "On Hold", "Cancelled"]
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+
+    const totalPages = Math.ceil(allTicket.length / itemsPerPage);
+
+    const handlePrevPage = () => {
+        if (currentPage > 1) setCurrentPage(currentPage - 1);
+    };
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    };
+
+    const paginatedTickets = allTicket.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+    useEffect(() => {
+        getAllTicket();
+    }, []);
 
     const filters = [
         { value: "TicketStatus", label: "Ticket Status" },
@@ -105,10 +124,10 @@ const TicketList = ({ isList, filter, isExcel,search }) => {
     }, [test, filter]);
 
     useEffect(() => {
-        if(allTicketCache.length>0){
-            let tickets=[...allTicketCache]
-            if(search){
-                tickets=tickets.filter(x=>
+        if (allTicketCache.length > 0) {
+            let tickets = [...allTicketCache]
+            if (search) {
+                tickets = tickets.filter(x =>
                     x.SR_ID.toLowerCase().includes(search.toLowerCase())
                     // ||
                     // x.CompanyName.toLowerCase().includes(search.toLowerCase())
@@ -118,11 +137,11 @@ const TicketList = ({ isList, filter, isExcel,search }) => {
                     // x.SR_ID.toLowerCase().includes(search.toLowerCase())
                 )
                 setAllTicket(tickets)
-            }else{
+            } else {
                 setAllTicket(tickets)
             }
         }
-      
+
     }, [search]);
 
     activePag.current === 0 && chageData(0, sort);
@@ -206,6 +225,7 @@ const TicketList = ({ isList, filter, isExcel,search }) => {
                 console.log(err);
             })
     }
+    console.log("all tickeetss", allTicket)
 
     const getDiffHours = (date1, date2) => {
         const startDate = new Date(date1);
@@ -478,7 +498,7 @@ const TicketList = ({ isList, filter, isExcel,search }) => {
                             </div>
                         </div>
                     </div>}
-                  
+
                     <div className='col-xl-12'>
                         <div className="card">
                             <div className="card-body p-0">
@@ -521,61 +541,78 @@ const TicketList = ({ isList, filter, isExcel,search }) => {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {getFilterTicket().map((item, index) => (
+                                                {paginatedTickets.map((item, index) => (
                                                     <tr key={index}>
                                                         <td className="sorting_25">
-                                                            <div className="form-check11custom-checkbox">
-                                                                <input type="checkbox" className="form-check-input"
-                                                                    id={`employees${index + 211}`} required=""
+                                                            <div className="form-check custom-checkbox">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    className="form-check-input"
+                                                                    id={`employees${index + 211}`}
                                                                     onClick={() => checkboxFun()}
                                                                 />
                                                                 <label className="form-check-label" htmlFor={`employees${index + 211}`}></label>
                                                             </div>
                                                         </td>
-                                                        <td><a class="text-primary" ><NavLink className='text-primary' to={{
-                                                            pathname: "/edit-ticket/" + item.SR_ID,
-                                                            state: item
-                                                        }}>{item.SR_ID}</NavLink></a></td>
                                                         <td>
-                                                            <span className="badge badge-info light border-0 me-1">{item.SR_Data_Logs[0].FieldData.CompanyName}</span>
+                                                            <NavLink className="text-primary" to={`/edit-ticket/${item.SR_ID}`} state={item}>
+                                                                {item.SR_ID}
+                                                            </NavLink>
                                                         </td>
                                                         <td>
-                                                            {item.SR_Data_Logs[0].FieldData.CompanyDivision&&item.SR_Data_Logs[0].FieldData.CompanyDivision.length>0?item.SR_Data_Logs[0].FieldData.CompanyDivision[0].value: '-'}
+                                                            <span className="badge badge-info light border-0 me-1">
+                                                                {item.SR_Data_Logs[0]?.FieldData?.CompanyName || "-"}
+                                                            </span>
                                                         </td>
                                                         <td>
-                                                            {item.StateName == 'Close' ?
-                                                                getCloseStatus(item)
-                                                                :
-                                                                <span className="badge badge-info light border-0 me-1">{item.StateName}</span>
-                                                            }
+                                                            {item.SR_Data_Logs[0]?.FieldData?.CompanyDivision?.[0]?.value || '-'}
                                                         </td>
                                                         <td>
-                                                            {getStatus(item, "Status")}
+                                                            {item.StateName === "Close" ? getCloseStatus(item)
+                                                                : <span className="badge badge-info light border-0 me-1">{item.StateName}</span>}
+                                                        </td>
+                                                        <td>{getStatus(item, "Status")}</td>
+                                                        <td>{getStatus(item, "Priority")}</td>
+                                                        <td>
+                                                            <span>{item.StartDate ? moment(item.StartDate).format('DD-MM-YYYY') : '-'}</span>
                                                         </td>
                                                         <td>
-                                                            {getStatus(item, "Priority")}
+                                                            <span>{item.DueDate ? moment(item.DueDate).format('DD-MM-YYYY') : '-'}</span>
                                                         </td>
-                                                        <td><span>{item.StartDate ? moment(item.StartDate).format('DD-MM-YYYY') : '-'}</span></td>
-                                                        <td><span>{item.DueDate ? moment(item.DueDate).format('DD-MM-YYYY') : '-'}</span></td>
-
                                                         <td>
                                                             <span>{item.CreatedBy}</span>
                                                         </td>
                                                         <td>
-                                                            <span>{item.SR_Data_Logs.at(-1).FieldData?.AssignPerson?.map(item => item.label).join(', ')}</span>
+                                                            <span>
+                                                                {item.SR_Data_Logs.at(-1)?.FieldData?.AssignPerson?.map(person => person.label).join(", ") || "-"}
+                                                            </span>
                                                         </td>
-                                                        <td><a onClick={() => { setShow(true); setShowTab("timesheet"); setSelectedTicket(item) }} className='text-primary'><NavLink class="text-primary" >{getTotalDiffHours(item)} Hours</NavLink></a></td>
                                                         <td>
-                                                            <div onClick={() => { setShow(true); setSelectedTicket(item) }} class="icon-badge-container">
-                                                                <i style={{ color: '#0D99FF', fontSize: '24px', cursor: 'pointer' }} class="fas fa-comment"></i>
+                                                            <NavLink className="text-primary" onClick={() => { setShow(true); setShowTab("timesheet"); setSelectedTicket(item); }}>
+                                                                {getTotalDiffHours(item)} Hours
+                                                            </NavLink>
+                                                        </td>
+                                                        <td>
+                                                            <div onClick={() => { setShow(true); setSelectedTicket(item); }} className="icon-badge-container">
+                                                                <i className="fas fa-comment" style={{ color: '#0D99FF', fontSize: '24px', cursor: 'pointer' }}></i>
                                                             </div>
                                                         </td>
-                                                       
                                                     </tr>
                                                 ))}
                                             </tbody>
 
+
                                         </table>
+                                        {/* Pagination Controls */}
+                                        <div className="d-flex justify-content-between align-items-center mt-3">
+                                            <button className="btn btn-primary" onClick={handlePrevPage} disabled={currentPage === 1}>
+                                                <FontAwesomeIcon icon={faChevronLeft} /> 
+                                            </button>
+                                            <span>Page {currentPage} of {totalPages}</span>
+                                            <button className="btn btn-primary" onClick={handleNextPage} disabled={currentPage === totalPages}>
+                                                 <FontAwesomeIcon icon={faChevronRight} />
+                                            </button>
+                                        </div>
                                         <div className="d-sm-flex text-center justify-content-between align-items-center">
                                             <div className="dataTables_info">
                                                 Showing {activePag.current * sort + 1} to{" "}
@@ -584,7 +621,7 @@ const TicketList = ({ isList, filter, isExcel,search }) => {
                                                     : data.length}{" "}
                                                 of {data.length} entries
                                             </div>
-                                            <div
+                                            {/* <div
                                                 className="dataTables_paginate paging_simple_numbers"
                                                 id="example2_paginate"
                                             >
@@ -621,7 +658,7 @@ const TicketList = ({ isList, filter, isExcel,search }) => {
                                                 >
                                                     <i className="fa-solid fa-angle-right" />
                                                 </Link>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
                                 </div>
